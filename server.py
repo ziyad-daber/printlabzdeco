@@ -28,7 +28,7 @@ ANCHOR_1 = 'String1 = "DUAL WORD"'
 ANCHOR_2 = 'String2 = "ILLUSION"'
 
 def sanitize_input(text: str) -> str:
-    \"\"\"Remove characters that could be used for SCAD injection.\"\"\"
+    """Remove characters that could be used for SCAD injection."""
     return "".join(c for c in text if c.isalnum() or c == " ")
 
 @app.get("/render")
@@ -92,7 +92,7 @@ async def render_scad(
 
 @app.get("/cleanup")
 async def cleanup():
-    \"\"\"Utility to clear the temp folder\"\"\"
+    """Utility to clear the temp folder"""
     for file in TEMP_DIR.glob("*"):
         file.unlink()
     return {"status": "cleaned"}
