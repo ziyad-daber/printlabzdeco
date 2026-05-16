@@ -1013,13 +1013,31 @@ function initThree() {
   rimLight.position.set(0, -3, -8);
   scene.add(rimLight);
 
-  // Shadow plane
+  // 3D Printer build plate (grid pattern like actual printer bed)
+  const plateGeometry = new THREE.PlaneGeometry(30, 30);
+  const plateMaterial = new THREE.MeshStandardMaterial({
+    color: 0x1a1a1a,
+    roughness: 0.8,
+    metalness: 0.2
+  });
+  const plate = new THREE.Mesh(plateGeometry, plateMaterial);
+  plane.rotation.x = -Math.PI / 2;
+  plate.position.y = -3;
+  plate.receiveShadow = true;
+  scene.add(plate);
+
+  // Build plate grid lines
+  const gridHelper = new THREE.GridHelper(30, 30, 0x333333, 0x222222);
+  gridHelper.position.y = -2.98;
+  scene.add(gridHelper);
+
+  // Shadow plane below
   const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(20, 20),
-    new THREE.ShadowMaterial({ opacity: 0.12 })
+    new THREE.ShadowMaterial({ opacity: 0.1 })
   );
   plane.rotation.x = -Math.PI / 2;
-  plane.position.y = -1.6;
+  plane.position.y = -5;
   plane.receiveShadow = true;
   scene.add(plane);
 
@@ -1065,7 +1083,7 @@ async function updateMesh() {
       geometry.computeBoundingBox();
       const center = new THREE.Vector3();
       geometry.boundingBox.getCenter(center);
-      mesh.position.set(-center.x, -center.y, -center.z);
+      mesh.position.set(-center.x, 0, -center.z);
 
       // Scale to fit view nicely
       geometry.boundingBox.getSize(mesh.scale);
@@ -1120,8 +1138,8 @@ function animate() {
   }
   */
 
-  // Idle bob
-  if (group) {
+  // Idle bob (only when no mesh loaded)
+  if (group && group.children.length === 0) {
     group.position.y = Math.sin(frame * 0.02) * 0.05;
   }
 
@@ -1147,7 +1165,7 @@ function setupControls(canvas) {
   window.addEventListener('mouseup', () => {
     isDragging = false;
     clearTimeout(autoRotateTimeout);
-    autoRotateTimeout = setTimeout(() => { autoRotate = true; }, 2000);
+    autoRotateTimeout = setTimeout(() => { /* autoRotate = true; */ }, 2000);
   });
 
 
@@ -1180,7 +1198,7 @@ function setupControls(canvas) {
     [...e.changedTouches].forEach(t => delete pointers[t.identifier]);
     if (e.touches.length === 0) lastDist = 0;
     clearTimeout(autoRotateTimeout);
-    autoRotateTimeout = setTimeout(() => { autoRotate = true; }, 2000);
+    autoRotateTimeout = setTimeout(() => { /* autoRotate = true; */ }, 2000);
   });
 }
 
