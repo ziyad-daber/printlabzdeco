@@ -993,8 +993,7 @@ function initThree() {
   scene = new THREE.Scene();
 
   camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 1000);
-  camera.position.set(0, 8, 8);
-  camera.lookAt(0, 0, 0);
+  camera.position.set(0, 5, 10);
 
   // Lighting
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
@@ -1061,12 +1060,14 @@ async function updateMesh() {
 
   try {
     const url = `/render?name1=${encodeURIComponent(state.name1)}&name2=${encodeURIComponent(state.name2)}`;
+    console.log('Fetching:', url);
     const response = await fetch(url);
 
-    if (!response.ok) throw new Error('Render failed');
+    if (!response.ok) throw new Error(`Render failed: ${response.status}`);
 
     const blob = await response.blob();
     const stlUrl = URL.createObjectURL(blob);
+    console.log('STL loaded:', stlUrl);
 
     loader.load(stlUrl, (geometry) => {
       while (group.children.length) group.remove(group.children[0]);
@@ -1087,14 +1088,15 @@ async function updateMesh() {
       geometry.boundingBox.getSize(size);
 
       // Position: centered on plate at y=0
-      mesh.position.set(0, 0, 0);
+      mesh.position.set(0, 0.5, 0);
 
       // Scale to fit nicely
       const scale = 2.5 / Math.max(size.x, size.y, size.z);
       mesh.scale.setScalar(scale);
 
-      // Rotate to lay flat - the STL comes with letters standing up
-      mesh.rotation.x = 0;
+      // Rotate to lay flat on the build plate
+      mesh.rotation.x = -Math.PI / 2;
+      mesh.rotation.z = Math.PI / 2;
 
       mesh.castShadow = true;
       mesh.receiveShadow = true;
