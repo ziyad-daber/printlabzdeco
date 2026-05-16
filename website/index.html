@@ -1135,17 +1135,15 @@ function setupControls(canvas) {
   window.addEventListener('mousemove', e => {
     if (!isDragging) return;
     const dx = e.clientX - lastX;
-    const dy = e.clientY - lastY;
     group.rotation.y += dx * 0.01;
-    group.rotation.x += dy * 0.005;
-    group.rotation.x = Math.max(-0.6, Math.min(0.6, group.rotation.x));
-    lastX = e.clientX; lastY = e.clientY;
+    lastX = e.clientX;
   });
   window.addEventListener('mouseup', () => {
     isDragging = false;
     clearTimeout(autoRotateTimeout);
     autoRotateTimeout = setTimeout(() => { autoRotate = true; }, 2000);
   });
+
 
   canvas.addEventListener('touchstart', e => {
     autoRotate = false;
@@ -1157,12 +1155,10 @@ function setupControls(canvas) {
     if (e.touches.length === 1) {
       const t = e.touches[0];
       const dx = t.clientX - (pointers[t.identifier]?.x || t.clientX);
-      const dy = t.clientY - (pointers[t.identifier]?.y || t.clientY);
       group.rotation.y += dx * 0.012;
-      group.rotation.x += dy * 0.006;
-      group.rotation.x = Math.max(-0.6, Math.min(0.6, group.rotation.x));
       pointers[t.identifier] = { x: t.clientX, y: t.clientY };
     } else if (e.touches.length === 2) {
+
       const [a, b] = [...e.touches];
       const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
       if (lastDist) {
