@@ -1087,16 +1087,12 @@ async function updateMesh() {
       const size = new THREE.Vector3();
       geometry.boundingBox.getSize(size);
 
-      // Position: centered on plate at y=0
+      // Position: center the model
       mesh.position.set(0, 0.5, 0);
 
       // Scale to fit nicely
       const scale = 2.5 / Math.max(size.x, size.y, size.z);
       mesh.scale.setScalar(scale);
-
-      // Rotate to lay flat on the build plate
-      mesh.rotation.x = -Math.PI / 2;
-      mesh.rotation.z = Math.PI / 2;
 
       mesh.castShadow = true;
       mesh.receiveShadow = true;
