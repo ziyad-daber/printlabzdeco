@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__composio__COMPOSIO_SEARCH_TOOLS",
+      "mcp__composio__COMPOSIO_MANAGE_CONNECTIONS",
+      "mcp__composio__COMPOSIO_WAIT_FOR_CONNECTIONS",
+      "mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL",
+      "Bash(git init *)",
+      "Bash(git remote *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git branch *)"
+    ]
+  }
+}

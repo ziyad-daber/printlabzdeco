@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PrintLabz – Illusions 3D Personnalisées 🇲🇦</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c-bg: #0a0a0f;
+    --c-surface: #12121a;
+    --c-card: #1a1a28;
+    --c-border: rgba(255,255,255,0.07);
+    --c-primary: #c026d3;
+    --c-secondary: #6366f1;
+    --c-accent: #f0abfc;
+    --c-gold: #fbbf24;
+    --c-text: #f1f0ff;
+    --c-muted: #9ca3b0;
+    --c-success: #10b981;
+    --grad: linear-gradient(135deg, #6366f1, #c026d3, #ec4899);
+    --grad-soft: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(192,38,211,0.15));
+    --radius: 20px;
+    --radius-sm: 12px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    opacity: .025;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px;
+  }
+
+  /* ── AMBIENT BLOBS ── */
+  .blob {
+    position: fixed; border-radius: 50%;
+    filter: blur(80px); opacity: .18; pointer-events: none; z-index: 0;
+    animation: drift 12s ease-in-out infinite alternate;
+  }
+  .blob-1 { width:500px; height:500px; background:#6366f1; top:-200px; right:-150px; }
+  .blob-2 { width:400px; height:400px; background:#c026d3; bottom:10%; left:-150px; animation-delay:-6s; }
+  .blob-3 { width:300px; height:300px; background:#ec4899; top:50%; right:-100px; animation-delay:-3s; }
+
+  @keyframes drift {
+    from { transform: translateY(0) scale(1); }
+    to   { transform: translateY(40px) scale(1.05); }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 24px;
+    background: rgba(10,10,15,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--c-border);
+  }
+  .nav-logo {
+    font-family: 'Rubik Mono One', monospace;
+    font-size: 1.1rem;
+    background: var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .nav-right { display:flex; align-items:center; gap:12px; }
+  .nav-ig {
+    display:flex; align-items:center; gap:6px;
+    font-size: .8rem; color: var(--c-muted);
+    text-decoration:none; transition: color .2s;
+  }
+  .nav-ig:hover { color: var(--c-accent); }
+  .nav-cta {
+    background: var(--grad); border:none; border-radius:10px;
+    padding:9px 18px; font-family:inherit; font-size:.85rem; font-weight:600;
+    color:#fff; cursor:pointer; transition: opacity .2s, transform .15s;
+  }
+  .nav-cta:hover { opacity:.9; transform: scale(1.03); }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative; z-index:1;
+    min-height: 100svh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 100px 20px 120px;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap:8px;
+    background: rgba(99,102,241,.15); border:1px solid rgba(99,102,241,.3);
+    border-radius:100px; padding:6px 16px;
+    font-size:.8rem; color: var(--c-accent); font-weight:500;
+    margin-bottom:28px;
+    animation: fadeUp .6s ease both;
+  }
+  .badge-dot {
+    width:6px; height:6px; border-radius:50%; background:#10b981;
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse {
+    0%,100%{ box-shadow:0 0 0 0 rgba(16,185,129,.4); }
+    50%{ box-shadow:0 0 0 6px rgba(16,185,129,0); }
+  }
+
+  .hero-headline {
+    font-family: 'Rubik Mono One', monospace;
+    font-size: clamp(2rem, 8vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -1px;
+    animation: fadeUp .7s .1s ease both;
+  }
+  .hero-headline .line-2 {
+    background: var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+
+  .hero-sub {
+    margin: 18px auto 0;
+    max-width: 480px;
+    font-size: 1rem;
+    color: var(--c-muted);
+    line-height: 1.65;
+    animation: fadeUp .7s .2s ease both;
+  }
+
+  /* ── 3D CANVAS CARD ── */
+  .canvas-card {
+    position: relative;
+    width: min(520px, 92vw);
+    margin: 36px auto 0;
+    border-radius: 24px;
+    overflow: hidden;
+    background: var(--c-card);
+    border: 1px solid var(--c-border);
+    box-shadow: 0 40px 100px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.04);
+    animation: fadeUp .7s .3s ease both;
+  }
+  #canvas3d {
+    display:block; width:100%; height:300px;
+    background: radial-gradient(ellipse at 50% 60%, #1e1630 0%, #0a0a0f 100%);
+    cursor: grab;
+  }
+  #canvas3d:active { cursor: grabbing; }
+
+  .canvas-overlay-label {
+    position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
+    background:rgba(10,10,15,.7); backdrop-filter:blur(8px);
+    border:1px solid var(--c-border); border-radius:100px;
+    padding:5px 14px; font-size:.75rem; color:var(--c-muted);
+    white-space:nowrap; pointer-events:none;
+  }
+
+  .canvas-loader {
+    position: absolute; inset: 0; display: none;
+    background: rgba(10,10,15,0.6); backdrop-filter: blur(4px);
+    justify-content: center; align-items: center;
+    z-index: 10; color: var(--c-text); font-size: 0.8rem;
+    font-family: 'Rubik Mono One', monospace;
+  }
+  .canvas-loader.active { display: flex; }
+
+
+  /* ── NAME INPUTS ── */
+  .name-inputs {
+    display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    padding: 16px;
+    border-top: 1px solid var(--c-border);
+    background: rgba(0,0,0,.2);
+  }
+  .name-field {
+    display:flex; flex-direction:column; gap:5px;
+  }
+  .name-label {
+    font-size:.7rem; font-weight:600; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--c-muted); padding-left:2px;
+  }
+  .name-input {
+    background: rgba(255,255,255,.06); border:1px solid var(--c-border);
+    border-radius: var(--radius-sm); padding:11px 14px;
+    font-family:'Rubik Mono One',monospace; font-size:.95rem;
+    color:var(--c-text); outline:none; width:100%;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .name-input:focus {
+    border-color: var(--c-primary);
+    box-shadow: 0 0 0 3px rgba(192,38,211,.15);
+  }
+  .name-input::placeholder { color: rgba(255,255,255,.2); font-size:.8rem; }
+
+  /* ── PRICE CTA ── */
+  .hero-price-bar {
+    display:flex; align-items:center; justify-content:center; gap:16px;
+    margin-top:28px; flex-wrap:wrap;
+    animation: fadeUp .7s .4s ease both;
+  }
+  .price-chip {
+    display:flex; align-items:center; gap:8px;
+    background: rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.25);
+    border-radius:12px; padding:12px 20px;
+  }
+  .price-amount {
+    font-family:'Rubik Mono One',monospace; font-size:1.5rem;
+    color: var(--c-success);
+  }
+  .price-label { font-size:.8rem; color:var(--c-muted); }
+  .btn-hero {
+    display:flex; align-items:center; gap:10px;
+    background: var(--grad); border:none; border-radius:16px;
+    padding:15px 32px; font-family:inherit; font-size:1rem; font-weight:700;
+    color:#fff; cursor:pointer;
+    box-shadow: 0 8px 32px rgba(192,38,211,.35);
+    transition: transform .15s, box-shadow .2s;
+  }
+  .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(192,38,211,.45); }
+  .btn-hero:active { transform: scale(.97); }
+
+  .hero-trust {
+    margin-top:16px; font-size:.8rem; color:var(--c-muted);
+    animation: fadeUp .7s .5s ease both;
+  }
+  .hero-trust span { color:var(--c-accent); }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(24px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    position:relative; z-index:1;
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:1px; background:var(--c-border);
+    border-top:1px solid var(--c-border);
+    border-bottom:1px solid var(--c-border);
+  }
+  .stat-item {
+    background:var(--c-surface);
+    padding:24px 16px; text-align:center;
+  }
+  .stat-value {
+    font-family:'Rubik Mono One',monospace; font-size:1.6rem;
+    background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .stat-label { font-size:.75rem; color:var(--c-muted); margin-top:4px; }
+
+  /* ── SECTIONS ── */
+  section { position:relative; z-index:1; padding:80px 20px; max-width:1100px; margin:0 auto; }
+  .section-tag {
+    display:inline-block; font-size:.75rem; font-weight:600; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--c-primary); margin-bottom:12px;
+  }
+  .section-title {
+    font-family:'Rubik Mono One',monospace;
+    font-size: clamp(1.5rem,4vw,2.5rem);
+    line-height:1.1; margin-bottom:14px;
+  }
+  .section-sub { font-size:.95rem; color:var(--c-muted); max-width:480px; line-height:1.65; }
+
+  /* ── HOW IT WORKS ── */
+  .steps {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:16px; margin-top:48px;
+  }
+  .step-card {
+    background:var(--c-card); border:1px solid var(--c-border); border-radius:var(--radius);
+    padding:28px 22px;
+    transition:border-color .2s, transform .2s;
+  }
+  .step-card:hover { border-color: rgba(192,38,211,.3); transform:translateY(-4px); }
+  .step-num {
+    font-family:'Rubik Mono One',monospace; font-size:2.5rem;
+    background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    margin-bottom:12px;
+  }
+  .step-title { font-weight:600; margin-bottom:6px; }
+  .step-desc { font-size:.85rem; color:var(--c-muted); line-height:1.55; }
+
+  /* ── PRODUCT OPTIONS ── */
+  .options-grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:16px; margin-top:48px;
+  }
+  .option-card {
+    background:var(--c-card); border:2px solid var(--c-border); border-radius:var(--radius);
+    padding:28px; cursor:pointer; transition:all .2s; position:relative; overflow:hidden;
+  }
+  .option-card::before {
+    content:''; position:absolute; inset:0; opacity:0;
+    background:var(--grad-soft); transition:opacity .2s;
+  }
+  .option-card:hover::before, .option-card.active::before { opacity:1; }
+  .option-card.active { border-color:var(--c-primary); }
+  .option-card.popular { border-color:rgba(99,102,241,.4); }
+  .popular-badge {
+    position:absolute; top:14px; right:14px;
+    background:var(--grad); border-radius:6px; padding:3px 10px;
+    font-size:.7rem; font-weight:700; color:#fff;
+  }
+  .option-name { font-family:'Rubik Mono One',monospace; font-size:1.1rem; margin-bottom:6px; }
+  .option-price {
+    font-size:1.6rem; font-weight:700; color:var(--c-success); margin-bottom:14px;
+  }
+  .option-size { font-size:.8rem; color:var(--c-muted); margin-bottom:12px; }
+  .option-features { list-style:none; display:flex; flex-direction:column; gap:6px; }
+  .option-features li { font-size:.85rem; display:flex; align-items:center; gap:8px; }
+  .option-features li::before { content:'✓'; color:var(--c-success); font-weight:700; }
+
+  /* ── COLOR PICKER ── */
+  .colors-section { margin-top:48px; }
+  .colors-label { font-weight:600; margin-bottom:16px; }
+  .color-swatches { display:flex; gap:10px; flex-wrap:wrap; }
+  .color-swatch {
+    width:44px; height:44px; border-radius:12px; cursor:pointer;
+    border:2px solid transparent; transition:transform .15s, border-color .15s;
+    position:relative;
+  }
+  .color-swatch:hover { transform:scale(1.1); }
+  .color-swatch.active {
+    border-color:#fff;
+    box-shadow: 0 0 0 3px rgba(255,255,255,.2);
+  }
+  .color-swatch::after {
+    content:''; display:none; position:absolute; inset:0;
+    border-radius:10px; background:rgba(255,255,255,.3);
+  }
+  .color-swatch.active::after { display:block; }
+
+  /* ── GALLERY ── */
+  .gallery-grid {
+    display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:48px;
+  }
+  @media(min-width:600px){ .gallery-grid { grid-template-columns:repeat(3,1fr); } }
+  .gallery-item {
+    aspect-ratio:1; border-radius:var(--radius-sm);
+    background:var(--c-card); border:1px solid var(--c-border);
+    overflow:hidden; position:relative; cursor:pointer;
+    transition: transform .2s;
+  }
+  .gallery-item:hover { transform:scale(1.02); }
+  .gallery-item-inner {
+    width:100%; height:100%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:8px; padding:16px; text-align:center;
+  }
+  .gallery-emoji { font-size:2.5rem; }
+  .gallery-name {
+    font-family:'Rubik Mono One',monospace; font-size:.85rem;
+    background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .gallery-label { font-size:.7rem; color:var(--c-muted); }
+  .gallery-item:first-child { grid-column:span 2; aspect-ratio:2/1; }
+  @media(min-width:600px){ .gallery-item:first-child { grid-column:span 1; aspect-ratio:1; } }
+
+  /* ── FAQ ── */
+  .faq-list { margin-top:48px; display:flex; flex-direction:column; gap:10px; }
+  .faq-item {
+    background:var(--c-card); border:1px solid var(--c-border);
+    border-radius:var(--radius-sm); overflow:hidden;
+    transition:border-color .2s;
+  }
+  .faq-item:hover { border-color:rgba(192,38,211,.25); }
+  .faq-q {
+    padding:18px 20px; font-weight:500; cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    user-select:none;
+  }
+  .faq-icon { font-size:1.2rem; transition:transform .25s; flex-shrink:0; }
+  .faq-item.open .faq-icon { transform:rotate(45deg); }
+  .faq-a {
+    max-height:0; overflow:hidden;
+    transition:max-height .3s ease, padding .3s;
+    font-size:.9rem; color:var(--c-muted); line-height:1.65;
+    padding:0 20px;
+  }
+  .faq-item.open .faq-a { max-height:200px; padding:0 20px 18px; }
+
+  /* ── TRUST ── */
+  .trust-bar {
+    position:relative; z-index:1;
+    background:var(--c-surface); border-top:1px solid var(--c-border); border-bottom:1px solid var(--c-border);
+    overflow:hidden;
+  }
+  .trust-track {
+    display:flex; gap:48px; align-items:center;
+    padding:18px 0; width:max-content;
+    animation: marquee 20s linear infinite;
+  }
+  .trust-item { display:flex; align-items:center; gap:8px; font-size:.85rem; white-space:nowrap; }
+  .trust-item span { color:var(--c-muted); }
+  @keyframes marquee {
+    from { transform:translateX(0); }
+    to   { transform:translateX(-50%); }
+  }
+
+  /* ── ORDER MODAL ── */
+  .modal-backdrop {
+    display:none; position:fixed; inset:0; z-index:200;
+    background:rgba(0,0,0,.7); backdrop-filter:blur(6px);
+    align-items:flex-end; justify-content:center;
+  }
+  .modal-backdrop.open { display:flex; }
+  @media(min-width:600px){ .modal-backdrop.open { align-items:center; } }
+
+  .modal {
+    background:var(--c-surface); border:1px solid var(--c-border);
+    border-radius: 28px 28px 0 0; padding:0;
+    width:100%; max-width:500px;
+    max-height:92svh; overflow-y:auto;
+    transform:translateY(100%); transition:transform .35s cubic-bezier(.25,.8,.25,1);
+  }
+  @media(min-width:600px){
+    .modal { border-radius:28px; transform:scale(.9) translateY(20px); opacity:0;
+    transition:transform .3s,opacity .3s; }
+  }
+  .modal-backdrop.open .modal {
+    transform:translateY(0); opacity:1;
+  }
+  @media(min-width:600px){ .modal-backdrop.open .modal { transform:scale(1) translateY(0); } }
+
+  .modal-handle {
+    width:40px; height:4px; background:var(--c-border);
+    border-radius:2px; margin:14px auto 0;
+  }
+  @media(min-width:600px){ .modal-handle { display:none; } }
+
+  .modal-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 24px 0;
+  }
+  .modal-title { font-family:'Rubik Mono One',monospace; font-size:1.2rem; }
+  .modal-close {
+    background:rgba(255,255,255,.06); border:none; border-radius:8px;
+    width:34px; height:34px; font-size:1.1rem; cursor:pointer; color:var(--c-text);
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .modal-body { padding:24px; }
+
+  /* Steps indicator */
+  .steps-indicator {
+    display:flex; gap:6px; margin-bottom:24px;
+  }
+  .step-dot {
+    height:4px; border-radius:2px; flex:1;
+    background:var(--c-border); transition:background .3s;
+  }
+  .step-dot.done { background:var(--grad); background-size:200%; }
+
+  .form-group { margin-bottom:18px; }
+  .form-label {
+    display:block; font-size:.8rem; font-weight:600; color:var(--c-muted);
+    text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px;
+  }
+  .form-input {
+    width:100%; background:rgba(255,255,255,.05); border:1px solid var(--c-border);
+    border-radius:var(--radius-sm); padding:13px 16px;
+    font-family:inherit; font-size:.95rem; color:var(--c-text); outline:none;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .form-input:focus {
+    border-color:var(--c-primary);
+    box-shadow:0 0 0 3px rgba(192,38,211,.12);
+  }
+  .phone-wrap { position:relative; }
+  .phone-prefix {
+    position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    font-size:.9rem; color:var(--c-muted); pointer-events:none;
+  }
+  .phone-wrap .form-input { padding-left:60px; }
+
+  .form-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+  .radio-group { display:flex; flex-direction:column; gap:8px; }
+  .radio-option {
+    display:flex; align-items:flex-start; gap:12px;
+    background:rgba(255,255,255,.04); border:1px solid var(--c-border);
+    border-radius:var(--radius-sm); padding:14px 16px; cursor:pointer;
+    transition:border-color .2s;
+  }
+  .radio-option:hover, .radio-option.selected { border-color:var(--c-primary); }
+  .radio-dot {
+    width:18px; height:18px; border-radius:50%; border:2px solid var(--c-border);
+    flex-shrink:0; margin-top:1px; position:relative; transition:border-color .2s;
+  }
+  .radio-option.selected .radio-dot { border-color:var(--c-primary); }
+  .radio-option.selected .radio-dot::after {
+    content:''; position:absolute; inset:3px; border-radius:50%; background:var(--c-primary);
+  }
+  .radio-text { flex:1; }
+  .radio-title { font-weight:500; font-size:.9rem; }
+  .radio-desc { font-size:.78rem; color:var(--c-muted); margin-top:2px; }
+  .radio-price { font-weight:700; color:var(--c-success); font-size:.9rem; }
+
+  .btn-primary {
+    width:100%; background:var(--grad); border:none; border-radius:16px;
+    padding:16px; font-family:inherit; font-size:1rem; font-weight:700;
+    color:#fff; cursor:pointer;
+    box-shadow:0 8px 28px rgba(192,38,211,.3);
+    transition:opacity .15s, transform .15s;
+  }
+  .btn-primary:hover { opacity:.92; transform:translateY(-1px); }
+
+  .btn-secondary {
+    width:100%; background:transparent; border:1px solid var(--c-border);
+    border-radius:16px; padding:14px; font-family:inherit; font-size:.9rem;
+    color:var(--c-muted); cursor:pointer; transition:border-color .2s, color .2s;
+    margin-top:8px;
+  }
+  .btn-secondary:hover { border-color:var(--c-primary); color:var(--c-text); }
+
+  /* ── SUMMARY BOX ── */
+  .summary-box {
+    background:rgba(255,255,255,.04); border:1px solid var(--c-border);
+    border-radius:var(--radius-sm); padding:16px; margin-bottom:20px;
+  }
+  .summary-row {
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:.9rem; padding:6px 0;
+  }
+  .summary-row + .summary-row { border-top:1px solid var(--c-border); }
+  .summary-total { font-weight:700; color:var(--c-success); font-size:1.05rem; }
+
+  /* ── SUCCESS VIEW ── */
+  .success-view { text-align:center; padding:20px 0; }
+  .success-icon {
+    font-size:4rem; margin-bottom:16px;
+    animation: bounceIn .5s cubic-bezier(.36,.07,.19,.97) both;
+  }
+  @keyframes bounceIn {
+    from { transform:scale(0) rotate(-10deg); opacity:0; }
+    60%  { transform:scale(1.15) rotate(3deg); }
+    to   { transform:scale(1) rotate(0); opacity:1; }
+  }
+  .success-title { font-family:'Rubik Mono One',monospace; font-size:1.4rem; margin-bottom:8px; }
+  .success-sub { color:var(--c-muted); font-size:.9rem; line-height:1.6; margin-bottom:24px; }
+  .whatsapp-btn {
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:#25d366; border:none; border-radius:14px;
+    padding:14px 24px; font-family:inherit; font-size:.95rem; font-weight:600;
+    color:#fff; cursor:pointer; width:100%;
+    box-shadow:0 6px 20px rgba(37,211,102,.25);
+    transition:opacity .15s;
+  }
+  .whatsapp-btn:hover { opacity:.9; }
+
+  /* ── STICKY BOTTOM ── */
+  .sticky-bottom {
+    position:fixed; bottom:0; left:0; right:0; z-index:90;
+    background:rgba(10,10,15,.85); backdrop-filter:blur(20px);
+    border-top:1px solid var(--c-border);
+    padding:12px 20px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .sticky-price {
+    display:flex; flex-direction:column;
+  }
+  .sticky-price-val {
+    font-family:'Rubik Mono One',monospace; font-size:1.3rem; color:var(--c-success);
+  }
+  .sticky-price-label { font-size:.72rem; color:var(--c-muted); }
+  .sticky-btn {
+    flex:1; max-width:220px;
+    background:var(--grad); border:none; border-radius:14px;
+    padding:13px 20px; font-family:inherit; font-size:.9rem; font-weight:700;
+    color:#fff; cursor:pointer;
+    box-shadow:0 4px 20px rgba(192,38,211,.3);
+    transition:transform .15s;
+  }
+  .sticky-btn:active { transform:scale(.97); }
+
+  /* ── FOOTER ── */
+  footer {
+    position:relative; z-index:1;
+    padding: 48px 20px 120px;
+    text-align:center; border-top:1px solid var(--c-border);
+  }
+  .footer-logo {
+    font-family:'Rubik Mono One',monospace; font-size:1.3rem;
+    background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    margin-bottom:12px;
+  }
+  .footer-links {
+    display:flex; justify-content:center; gap:20px; flex-wrap:wrap;
+    margin-top:16px;
+  }
+  .footer-links a {
+    font-size:.85rem; color:var(--c-muted); text-decoration:none;
+    transition:color .2s;
+  }
+  .footer-links a:hover { color:var(--c-accent); }
+  .footer-copy { margin-top:20px; font-size:.78rem; color:var(--c-muted); }
+  .footer-ma { font-size:1.1rem; }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:400px){
+    .form-grid-2 { grid-template-columns:1fr; }
+    .steps { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Ambient blobs -->
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<!-- ── NAVIGATION ── -->
+<nav>
+  <div class="nav-logo">✨ PrintLabz</div>
+  <div class="nav-right">
+    <a class="nav-ig" href="https://instagram.com/printlabz.decoration" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      @printlabz.decoration
+    </a>
+    <button class="nav-cta" onclick="openModal()">Commander</button>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-badge">
+    <div class="badge-dot"></div>
+    Livraison gratuite partout au Maroc 🇲🇦
+  </div>
+
+  <h1 class="hero-headline">
+    TRANSFORMER<br>
+    <span class="line-2">2 PRÉNOMS</span><br>
+    EN UNE ILLUSION<br>
+    ✨ 3D UNIQUE
+  </h1>
+
+  <p class="hero-sub">
+    Un cadeau inoubliable, 100% personnalisé.<br>
+    Fabrique au Maroc avec amour 💜
+  </p>
+
+  <!-- 3D Canvas -->
+  <div class="canvas-card">
+    <div class="canvas-loader" id="canvasLoader">Generating 3D...</div>
+    <canvas id="canvas3d"></canvas>
+    <div class="canvas-overlay-label">🔄 Faites glisser pour tourner</div>
+
+    <div class="name-inputs">
+      <div class="name-field">
+        <label class="name-label" for="name1Input">✦ Prénom 1</label>
+        <input class="name-input" id="name1Input" type="text" maxlength="8"
+          placeholder="SARAH" autocomplete="off" autocorrect="off" spellcheck="false">
+      </div>
+      <div class="name-field">
+        <label class="name-label" for="name2Input">✦ Prénom 2</label>
+        <input class="name-input" id="name2Input" type="text" maxlength="8"
+          placeholder="KARIM" autocomplete="off" autocorrect="off" spellcheck="false">
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-price-bar">
+    <div class="price-chip">
+      <div>
+        <div class="price-amount">149 DH</div>
+        <div class="price-label">🚚 Livraison gratuite</div>
+      </div>
+    </div>
+    <button class="btn-hero" onclick="openModal()">
+      <span>Commander Maintenant</span>
+      <span>→</span>
+    </button>
+  </div>
+
+  <p class="hero-trust">Déjà <span>2,874+</span> clients satisfaits sur Instagram</p>
+</section>
+
+<!-- ── TRUST MARQUEE ── -->
+<div class="trust-bar">
+  <div class="trust-track" id="trustTrack">
+    <div class="trust-item">✨ <span>Fabriqué au Maroc 🇲🇦</span></div>
+    <div class="trust-item">🚚 <span>Livraison gratuite partout</span></div>
+    <div class="trust-item">⚡ <span>Livraison en 3-4 jours</span></div>
+    <div class="trust-item">💳 <span>Paiement à la livraison</span></div>
+    <div class="trust-item">🎁 <span>Emballage cadeau disponible</span></div>
+    <div class="trust-item">✅ <span>2,874+ commandes réalisées</span></div>
+    <div class="trust-item">🏆 <span>Qualité premium garantie</span></div>
+    <div class="trust-item">📦 <span>Suivi de commande en temps réel</span></div>
+    <!-- Duplicate for seamless loop -->
+    <div class="trust-item">✨ <span>Fabriqué au Maroc 🇲🇦</span></div>
+    <div class="trust-item">🚚 <span>Livraison gratuite partout</span></div>
+    <div class="trust-item">⚡ <span>Livraison en 3-4 jours</span></div>
+    <div class="trust-item">💳 <span>Paiement à la livraison</span></div>
+    <div class="trust-item">🎁 <span>Emballage cadeau disponible</span></div>
+    <div class="trust-item">✅ <span>2,874+ commandes réalisées</span></div>
+    <div class="trust-item">🏆 <span>Qualité premium garantie</span></div>
+    <div class="trust-item">📦 <span>Suivi de commande en temps réel</span></div>
+  </div>
+</div>
+
+<!-- ── STATS ── -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-value">2,874+</div>
+    <div class="stat-label">Clients satisfaits</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">4.9★</div>
+    <div class="stat-label">Note moyenne</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">3-4j</div>
+    <div class="stat-label">Délai livraison</div>
+  </div>
+</div>
+
+<!-- ── HOW IT WORKS ── -->
+<section>
+  <div class="section-tag">Comment ça marche</div>
+  <h2 class="section-title">Simple comme<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">bonjour ✨</span></h2>
+  <p class="section-sub">Commandez en moins de 2 minutes, recevez chez vous en 3-4 jours.</p>
+
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-title">Personnalisez</div>
+      <p class="step-desc">Entrez les deux prénoms, choisissez la couleur et la taille. La prévisualisation 3D se met à jour en direct.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-title">Commandez</div>
+      <p class="step-desc">Remplissez vos coordonnées. Paiement à la livraison, aucune carte bancaire requise.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-title">On fabrique</div>
+      <p class="step-desc">Votre illusion 3D est imprimée à Marrakech avec soin et emballée comme un vrai cadeau.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-title">Livraison</div>
+      <p class="step-desc">Livré partout au Maroc en 3-4 jours. Express disponible en 1-2 jours avec +50 DH.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── OPTIONS ── -->
+<section>
+  <div class="section-tag">Nos formules</div>
+  <h2 class="section-title">Choisissez<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">votre taille</span></h2>
+
+  <div class="options-grid" id="optionsGrid">
+    <div class="option-card" data-size="S" data-price="149" onclick="selectOption(this)">
+      <div class="option-name">SMALL</div>
+      <div class="option-price">149 DH</div>
+      <div class="option-size">Blocs de 15mm</div>
+      <ul class="option-features">
+        <li>Livraison gratuite</li>
+        <li>2 prénoms</li>
+        <li>Choix couleur</li>
+        <li>Paiement livraison</li>
+      </ul>
+    </div>
+    <div class="option-card popular active" data-size="M" data-price="199" onclick="selectOption(this)">
+      <div class="popular-badge">⭐ Populaire</div>
+      <div class="option-name">MEDIUM</div>
+      <div class="option-price">199 DH</div>
+      <div class="option-size">Blocs de 20mm</div>
+      <ul class="option-features">
+        <li>Livraison gratuite</li>
+        <li>2 prénoms</li>
+        <li>Choix couleur</li>
+        <li>Paiement livraison</li>
+        <li>Emballage cadeau offert</li>
+      </ul>
+    </div>
+    <div class="option-card" data-size="L" data-price="249" onclick="selectOption(this)">
+      <div class="option-name">LARGE</div>
+      <div class="option-price">249 DH</div>
+      <div class="option-size">Blocs de 25mm</div>
+      <ul class="option-features">
+        <li>Livraison gratuite</li>
+        <li>2 prénoms</li>
+        <li>Choix couleur premium</li>
+        <li>Paiement livraison</li>
+        <li>Emballage cadeau offert</li>
+        <li>Livraison express incluse</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Colors -->
+  <div class="colors-section">
+    <div class="colors-label">Couleur du produit</div>
+    <div class="color-swatches" id="colorSwatches">
+      <div class="color-swatch active" data-color="#ffffff" style="background:#ffffff;" onclick="selectColor(this)" title="Blanc"></div>
+      <div class="color-swatch" data-color="#f8d7da" style="background:#f8b4c0;" onclick="selectColor(this)" title="Rose"></div>
+      <div class="color-swatch" data-color="#c026d3" style="background:#c026d3;" onclick="selectColor(this)" title="Violet"></div>
+      <div class="color-swatch" data-color="#6366f1" style="background:#6366f1;" onclick="selectColor(this)" title="Indigo"></div>
+      <div class="color-swatch" data-color="#10b981" style="background:#10b981;" onclick="selectColor(this)" title="Vert"></div>
+      <div class="color-swatch" data-color="#fbbf24" style="background:#fbbf24;" onclick="selectColor(this)" title="Or"></div>
+      <div class="color-swatch" data-color="#ef4444" style="background:#ef4444;" onclick="selectColor(this)" title="Rouge"></div>
+      <div class="color-swatch" data-color="#111827" style="background:#111827;border:1px solid rgba(255,255,255,.2);" onclick="selectColor(this)" title="Noir"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GALLERY ── -->
+<section>
+  <div class="section-tag">Showroom</div>
+  <h2 class="section-title">Ils l'ont<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">déjà adoré 💜</span></h2>
+
+  <div class="gallery-grid">
+    <div class="gallery-item" onclick="prefillNames('SARA','ADAM')">
+      <div class="gallery-item-inner">
+        <div class="gallery-emoji">🌹</div>
+        <div class="gallery-name">SARA × ADAM</div>
+        <div class="gallery-label">Cadeau Saint-Valentin</div>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="prefillNames('MAMA','BABA')">
+      <div class="gallery-item-inner">
+        <div class="gallery-emoji">❤️</div>
+        <div class="gallery-name">MAMA × BABA</div>
+        <div class="gallery-label">Cadeau parents</div>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="prefillNames('LEILA','YOUSSEF')">
+      <div class="gallery-item-inner">
+        <div class="gallery-emoji">💍</div>
+        <div class="gallery-name">LEILA × YOUSSEF</div>
+        <div class="gallery-label">Cadeau mariage</div>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="prefillNames('RYA','NOUR')">
+      <div class="gallery-item-inner">
+        <div class="gallery-emoji">🎂</div>
+        <div class="gallery-name">RYA × NOUR</div>
+        <div class="gallery-label">Anniversaire BFF</div>
+      </div>
+    </div>
+    <div class="gallery-item" onclick="prefillNames('ANAS','HIBA')">
+      <div class="gallery-item-inner">
+        <div class="gallery-emoji">✨</div>
+        <div class="gallery-name">ANAS × HIBA</div>
+        <div class="gallery-label">Couple goals</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section>
+  <div class="section-tag">FAQ</div>
+  <h2 class="section-title">Vos questions,<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">nos réponses</span></h2>
+
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>C'est quoi exactement une illusion 3D ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Un bloc imprimé en 3D qui affiche un prénom différent selon l'angle de vue. Vu de face, vous lisez un prénom. Vu de côté, vous lisez l'autre. La magie est dans la géométrie !</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Quel est le délai de livraison ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Livraison standard en 3-4 jours ouvrables partout au Maroc, weekend inclus. Option express disponible en 1-2 jours pour +50 DH.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Comment se passe le paiement ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Paiement à la livraison, en cash, au moment de la réception. Aucune carte bancaire ou virement requis. Simple et sécurisé !</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Puis-je avoir un emballage cadeau ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Oui ! L'emballage cadeau est offert pour les formules Medium et Large. Pour le Small, vous pouvez l'ajouter pour +20 DH.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Les prénoms peuvent être en arabe ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Pour le moment, notre système supporte les prénoms en caractères latins (A-Z). Contactez-nous sur WhatsApp pour des demandes spéciales en arabe.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>C'est livré où exactement ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Partout au Maroc : Casablanca, Rabat, Marrakech, Fès, Tanger, Agadir, Meknès, Oujda... et toutes les villes et villages accessibles par livreur.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">✨ PrintLabz Decoration</div>
+  <p style="color:var(--c-muted);font-size:.85rem;margin-top:8px;">Décoration 3D personnalisée • Prénoms • Murales • Créations sur mesure</p>
+  <div class="footer-links">
+    <a href="https://instagram.com/printlabz.decoration" target="_blank">Instagram</a>
+    <a href="https://wa.me/212600000000" target="_blank">WhatsApp</a>
+    <a href="mailto:printlabz@gmail.com">Email</a>
+  </div>
+  <p class="footer-copy">© 2026 PrintLabz · Fabriqué à Marrakech <span class="footer-ma">🇲🇦</span> avec ❤️</p>
+</footer>
+
+<!-- ── STICKY BOTTOM ── -->
+<div class="sticky-bottom">
+  <div class="sticky-price">
+    <div class="sticky-price-val" id="stickyPrice">149 DH</div>
+    <div class="sticky-price-label">🚚 Livraison gratuite</div>
+  </div>
+  <button class="sticky-btn" onclick="openModal()">Commander maintenant →</button>
+</div>
+
+<!-- ── ORDER MODAL ── -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Commander ✨</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- injected by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ── THREE.JS ── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/STLLoader.js"></script>
+<script>
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+const state = {
+  name1: 'SARAH',
+  name2: 'KARIM',
+  color: '#ffffff',
+  size: 'M',
+  price: 199,
+  gift: false,
+  rush: false,
+  modalStep: 1,
+  orderData: {}
+};
+
+// ══════════════════════════════════════════════
+//  THREE.JS SCENE
+// ══════════════════════════════════════════════
+let scene, camera, renderer, group;
+let isDragging = false, lastX = 0, lastY = 0;
+let autoRotate = true, autoRotateTimeout;
+let currentColor = new THREE.Color(0xffffff);
+let targetColor  = new THREE.Color(0xffffff);
+let textMeshes   = { front: null, side: null };
+
+function initThree() {
+  const canvas = document.getElementById('canvas3d');
+  const W = canvas.parentElement.offsetWidth;
+  const H = 300;
+  canvas.width  = W * devicePixelRatio;
+  canvas.height = H * devicePixelRatio;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(devicePixelRatio);
+  renderer.setSize(W, H);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  scene = new THREE.Scene();
+
+  camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
+  camera.position.set(0, 1, 7);
+
+  // Lighting
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+  scene.add(ambientLight);
+
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  dirLight.position.set(5, 10, 8);
+  dirLight.castShadow = true;
+  scene.add(dirLight);
+
+  const fillLight = new THREE.DirectionalLight(0xc026d3, 0.5);
+  fillLight.position.set(-5, 2, -5);
+  scene.add(fillLight);
+
+  const rimLight = new THREE.DirectionalLight(0x6366f1, 0.4);
+  rimLight.position.set(0, -3, -8);
+  scene.add(rimLight);
+
+  // Shadow plane
+  const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(20, 20),
+    new THREE.ShadowMaterial({ opacity: 0.12 })
+  );
+  plane.rotation.x = -Math.PI / 2;
+  plane.position.y = -1.6;
+  plane.receiveShadow = true;
+  scene.add(plane);
+
+  // Build the product
+  group = new THREE.Group();
+  scene.add(group);
+  updateMesh();
+
+  // Controls
+  setupControls(canvas);
+
+  // Start loop
+  animate();
+}
+
+const loader = new THREE.STLLoader();
+const loaderEl = document.getElementById('canvasLoader');
+
+async function updateMesh() {
+  loaderEl.classList.add('active');
+
+  try {
+    const url = `/render?name1=${encodeURIComponent(state.name1)}&name2=${encodeURIComponent(state.name2)}`;
+    const response = await fetch(url);
+
+    if (!response.ok) throw new Error('Render failed');
+
+    const blob = await response.blob();
+    const stlUrl = URL.createObjectURL(blob);
+
+    loader.load(stlUrl, (geometry) => {
+      while (group.children.length) group.remove(group.children[0]);
+
+      const material = new THREE.MeshStandardMaterial({
+        color: targetColor,
+        roughness: 0.3,
+        metalness: 0.1
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      geometry.computeBoundingBox();
+      const center = new THREE.Vector3();
+      geometry.boundingBox.getCenter(center);
+      mesh.position.set(-center.x, -center.y, -center.z);
+
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      group.add(mesh);
+      URL.revokeObjectURL(stlUrl);
+      loaderEl.classList.remove('active');
+    });
+  } catch (e) {
+    console.error(e);
+    loaderEl.textContent = "Error rendering 3D";
+    setTimeout(() => loaderEl.classList.remove('active'), 3000);
+  }
+}
+
+function debounce(func, wait) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+const debouncedUpdate = debounce(updateMesh, 500);
+
+// ── ANIMATION LOOP ──
+let frame = 0;
+function animate() {
+  requestAnimationFrame(animate);
+  frame++;
+
+  // Color lerp
+  currentColor.lerp(targetColor, 0.06);
+  if (group) {
+    group.traverse(child => {
+      if (child.isMesh && child.material && child.material.color) {
+        child.material.color.lerp(targetColor, 0.06);
+      }
+    });
+  }
+
+  // Auto-rotate
+  if (autoRotate && group) {
+    group.rotation.y += 0.008;
+  }
+
+  // Idle bob
+  if (group) {
+    group.position.y = Math.sin(frame * 0.02) * 0.05;
+  }
+
+  renderer.render(scene, camera);
+}
+
+// ── CONTROLS ──
+function setupControls(canvas) {
+  let pointers = {};
+  let lastDist = 0;
+
+  canvas.addEventListener('mousedown', e => {
+    isDragging = true; lastX = e.clientX; lastY = e.clientY;
+    autoRotate = false;
+  });
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - lastX;
+    const dy = e.clientY - lastY;
+    group.rotation.y += dx * 0.01;
+    group.rotation.x += dy * 0.005;
+    group.rotation.x = Math.max(-0.6, Math.min(0.6, group.rotation.x));
+    lastX = e.clientX; lastY = e.clientY;
+  });
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+    clearTimeout(autoRotateTimeout);
+    autoRotateTimeout = setTimeout(() => { autoRotate = true; }, 2000);
+  });
+
+  canvas.addEventListener('touchstart', e => {
+    autoRotate = false;
+    [...e.touches].forEach(t => pointers[t.identifier] = { x: t.clientX, y: t.clientY });
+  }, { passive: true });
+
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+      const t = e.touches[0];
+      const dx = t.clientX - (pointers[t.identifier]?.x || t.clientX);
+      const dy = t.clientY - (pointers[t.identifier]?.y || t.clientY);
+      group.rotation.y += dx * 0.012;
+      group.rotation.x += dy * 0.006;
+      group.rotation.x = Math.max(-0.6, Math.min(0.6, group.rotation.x));
+      pointers[t.identifier] = { x: t.clientX, y: t.clientY };
+    } else if (e.touches.length === 2) {
+      const [a, b] = [...e.touches];
+      const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+      if (lastDist) {
+        const delta = dist - lastDist;
+        camera.position.z = Math.max(3, Math.min(12, camera.position.z - delta * 0.02));
+      }
+      lastDist = dist;
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', e => {
+    [...e.changedTouches].forEach(t => delete pointers[t.identifier]);
+    if (e.touches.length === 0) lastDist = 0;
+    clearTimeout(autoRotateTimeout);
+    autoRotateTimeout = setTimeout(() => { autoRotate = true; }, 2000);
+  });
+}
+
+// ── NAME INPUT HANDLERS ──
+document.getElementById('name1Input').addEventListener('input', e => {
+  state.name1 = e.target.value.toUpperCase();
+  e.target.value = state.name1;
+  debouncedUpdate();
+});
+document.getElementById('name2Input').addEventListener('input', e => {
+  state.name2 = e.target.value.toUpperCase();
+  e.target.value = state.name2;
+  debouncedUpdate();
+});
+
+function prefillNames(n1, n2) {
+  document.getElementById('name1Input').value = n1;
+  document.getElementById('name2Input').value = n2;
+  state.name1 = n1; state.name2 = n2;
+  debouncedUpdate();
+  document.getElementById('canvas3d').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ── OPTION SELECTION ──
+function selectOption(el) {
+  document.querySelectorAll('.option-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  state.size  = el.dataset.size;
+  state.price = parseInt(el.dataset.price);
+  document.getElementById('stickyPrice').textContent = state.price + ' DH';
+}
+
+// ── COLOR SELECTION ──
+function selectColor(el) {
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  state.color = el.dataset.color;
+  targetColor.set(state.color);
+}
+
+// ── FAQ ──
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// ══════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════
+function openModal() {
+  state.modalStep = 1;
+  renderModal();
+  document.getElementById('modalBackdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalBackdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById('modalBackdrop')) closeModal();
+}
+
+function renderModal() {
+  const step = state.modalStep;
+
+  const stepTitles = {
+    1: 'Livraison 📦',
+    2: 'Options ✨',
+    3: 'Paiement 💳',
+    4: 'Confirmé 🎉'
+  };
+
+  document.getElementById('modalTitle').textContent = stepTitles[step] || '✨';
+
+  const body = document.getElementById('modalBody');
+  body.innerHTML = '';
+
+  // Steps indicator
+  const ind = document.createElement('div');
+  ind.className = 'steps-indicator';
+  for (let i = 1; i <= 3; i++) {
+    const d = document.createElement('div');
+    d.className = 'step-dot' + (i < step ? ' done' : '');
+    ind.appendChild(d);
+  }
+  if (step < 4) body.appendChild(ind);
+
+  if (step === 1) renderStep1(body);
+  else if (step === 2) renderStep2(body);
+  else if (step === 3) renderStep3(body);
+  else renderSuccess(body);
+}
+
+function renderStep1(body) {
+  body.insertAdjacentHTML('beforeend', `
+    <div class="form-group">
+      <label class="form-label">Nom complet</label>
+      <input class="form-input" id="f-name" type="text" placeholder="Mohammed Alami"
+        value="${state.orderData.name || ''}">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Téléphone</label>
+      <div class="phone-wrap">
+        <span class="phone-prefix">+212</span>
+        <input class="form-input" id="f-phone" type="tel" placeholder="6XX-XXXXXX"
+          value="${state.orderData.phone || ''}">
+      </div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-group">
+        <label class="form-label">Ville</label>
+        <input class="form-input" id="f-city" type="text" placeholder="Marrakech"
+          value="${state.orderData.city || ''}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Quartier (opt.)</label>
+        <input class="form-input" id="f-area" type="text" placeholder="Guéliz"
+          value="${state.orderData.area || ''}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Adresse (optionnel)</label>
+      <input class="form-input" id="f-addr" type="text" placeholder="N° rue, immeuble..."
+        value="${state.orderData.address || ''}">
+    </div>
+    <button class="btn-primary" onclick="validateStep1()">Suivant →</button>
+    <button class="btn-secondary" onclick="closeModal()">Annuler</button>
+  `);
+}
+
+function validateStep1() {
+  const name  = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const city  = document.getElementById('f-city').value.trim();
+
+  if (!name || !phone || !city) {
+    alert('Veuillez remplir le nom, le téléphone et la ville.');
+    return;
+  }
+  if (!/^\d{8,10}$/.test(phone.replace(/\D/g,''))) {
+    alert('Numéro de téléphone invalide.');
+    return;
+  }
+
+  state.orderData = {
+    name, phone, city,
+    area: document.getElementById('f-area').value.trim(),
+    address: document.getElementById('f-addr').value.trim(),
+  };
+  state.modalStep = 2;
+  renderModal();
+}
+
+function renderStep2(body) {
+  body.insertAdjacentHTML('beforeend', `
+    <div class="form-group">
+      <label class="form-label">Délai de livraison</label>
+      <div class="radio-group">
+        <div class="radio-option ${!state.rush ? 'selected' : ''}" onclick="selectRush(this, false)">
+          <div class="radio-dot"></div>
+          <div class="radio-text">
+            <div class="radio-title">Standard</div>
+            <div class="radio-desc">3-4 jours ouvrables</div>
+          </div>
+          <div class="radio-price">Gratuit</div>
+        </div>
+        <div class="radio-option ${state.rush ? 'selected' : ''}" onclick="selectRush(this, true)">
+          <div class="radio-dot"></div>
+          <div class="radio-text">
+            <div class="radio-title">⚡ Express</div>
+            <div class="radio-desc">1-2 jours ouvrables</div>
+          </div>
+          <div class="radio-price">+50 DH</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Emballage cadeau</label>
+      <div class="radio-group">
+        <div class="radio-option ${!state.gift ? 'selected' : ''}" onclick="selectGift(this, false)">
+          <div class="radio-dot"></div>
+          <div class="radio-text">
+            <div class="radio-title">Sans emballage</div>
+          </div>
+          <div class="radio-price">Gratuit</div>
+        </div>
+        <div class="radio-option ${state.gift ? 'selected' : ''}" onclick="selectGift(this, true)">
+          <div class="radio-dot"></div>
+          <div class="radio-text">
+            <div class="radio-title">🎁 Emballage cadeau</div>
+            <div class="radio-desc">Emballage premium avec ruban</div>
+          </div>
+          <div class="radio-price">+20 DH</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="nextStep(3)">Suivant →</button>
+    <button class="btn-secondary" onclick="nextStep(1)">← Retour</button>
+  `);
+}
+
+function selectRush(el, val) {
+  document.querySelectorAll('#modalBody .radio-group:nth-child(1) .radio-option')
+    .forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.rush = val;
+}
+
+function selectGift(el, val) {
+  document.querySelectorAll('#modalBody .radio-group:nth-child(2) .radio-option')
+    .forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.gift = val;
+}
+
+function renderStep3(body) {
+  const basePrice = state.price;
+  const rushExtra = state.rush ? 50 : 0;
+  const giftExtra = state.gift && state.size === 'S' ? 20 : 0;
+  const total = basePrice + rushExtra + giftExtra;
+
+  body.insertAdjacentHTML('beforeend', `
+    <div class="summary-box">
+      <div class="summary-row">
+        <span>Illusion 3D ${state.size} (${state.name1} × ${state.name2})</span>
+        <span>${basePrice} DH</span>
+      </div>
+      ${rushExtra ? `<div class="summary-row"><span>⚡ Livraison express</span><span>+${rushExtra} DH</span></div>` : ''}
+      ${giftExtra ? `<div class="summary-row"><span>🎁 Emballage cadeau</span><span>+${giftExtra} DH</span></div>` : ''}
+      <div class="summary-row">
+        <span>🚚 Livraison</span>
+        <span style="color:var(--c-success)">Gratuite</span>
+      </div>
+      <div class="summary-row">
+        <span style="font-weight:700">Total</span>
+        <span class="summary-total">${total} DH</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mode de paiement</label>
+      <div class="radio-group">
+        <div class="radio-option selected">
+          <div class="radio-dot" style="border-color:var(--c-primary)"><div style="position:absolute;inset:3px;border-radius:50%;background:var(--c-primary)"></div></div>
+          <div class="radio-text">
+            <div class="radio-title">💵 Paiement à la livraison</div>
+            <div class="radio-desc">Cash au moment de la réception. Le plus populaire au Maroc.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:14px;font-size:.85rem;color:#6ee7b7;margin-bottom:18px;">
+      ✅ Commande sécurisée. Aucun prépaiement requis. Vous payez uniquement à la réception.
+    </div>
+    <button class="btn-primary" onclick="submitOrder()">Confirmer la commande ✨</button>
+    <button class="btn-secondary" onclick="nextStep(2)">← Retour</button>
+  `);
+}
+
+function renderSuccess(body) {
+  const name = state.orderData.name?.split(' ')[0] || 'là';
+  body.insertAdjacentHTML('beforeend', `
+    <div class="success-view">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">Commande reçue !</div>
+      <p class="success-sub">
+        Merci ${name} ! Votre illusion 3D<br>
+        <strong style="color:var(--c-accent)">${state.name1} × ${state.name2}</strong><br>
+        est en cours de fabrication à Marrakech.<br><br>
+        📱 Nous vous contacterons au <strong>+212 ${state.orderData.phone}</strong><br>
+        pour confirmer votre commande.
+      </p>
+      <button class="whatsapp-btn" onclick="openWhatsApp()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Confirmer via WhatsApp
+      </button>
+    </div>
+  `);
+}
+
+function openWhatsApp() {
+  const n1 = state.name1, n2 = state.name2;
+  const d = state.orderData;
+  const basePrice = state.price;
+  const rushExtra = state.rush ? 50 : 0;
+  const giftExtra = state.gift && state.size === 'S' ? 20 : 0;
+  const total = basePrice + rushExtra + giftExtra;
+
+  const msg = `✨ Nouvelle commande PrintLabz!\n\n` +
+    `👤 ${d.name}\n📱 +212${d.phone}\n📍 ${d.city}${d.area ? ', ' + d.area : ''}\n\n` +
+    `🎁 Illusion 3D: *${n1} × ${n2}*\n` +
+    `📐 Taille: ${state.size}\n` +
+    `🎨 Couleur: ${state.color}\n` +
+    `${state.rush ? '⚡ Express\n' : ''}${state.gift ? '🎁 Emballage cadeau\n' : ''}` +
+    `\n💰 Total: *${total} DH* (à la livraison)`;
+
+  window.open(`https://wa.me/212600000000?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function nextStep(n) {
+  state.modalStep = n;
+  renderModal();
+}
+
+function submitOrder() {
+  state.modalStep = 4;
+  renderModal();
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  initThree();
+});
+</script>
+</body>
+</html>
