@@ -608,6 +608,8 @@
   @media(max-width:400px){
     .form-grid-2 { grid-template-columns:1fr; }
     .steps { grid-template-columns:1fr; }
+    .name-inputs { grid-template-columns:1fr; }
+    #hero { padding: 80px 16px 100px; }
   }
 </style>
 </head>
@@ -1062,6 +1064,13 @@ async function updateMesh() {
       const center = new THREE.Vector3();
       geometry.boundingBox.getCenter(center);
       mesh.position.set(-center.x, -center.y, -center.z);
+
+      // Normalize scale: fit model into a ~3 unit bounding box
+      const size = new THREE.Vector3();
+      geometry.boundingBox.getSize(size);
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const scale = 3 / maxDim;
+      mesh.scale.set(scale, scale, scale);
 
       mesh.castShadow = true;
       mesh.receiveShadow = true;
